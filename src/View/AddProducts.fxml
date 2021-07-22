@@ -6,13 +6,13 @@
 
 <AnchorPane prefHeight="559.0" prefWidth="832.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.AddProductsController">
     <children>
-        <TextField layoutX="97.0" layoutY="181.0" />
-        <TextField layoutX="97.0" layoutY="222.0" />
-        <TextField layoutX="97.0" layoutY="259.0" prefHeight="25.0" prefWidth="79.0" />
-        <TextField layoutX="97.0" layoutY="301.0" prefHeight="25.0" prefWidth="79.0" />
-        <TextField layoutX="97.0" layoutY="338.0" prefHeight="25.0" prefWidth="79.0" />
-        <TextField layoutX="260.0" layoutY="338.0" prefHeight="25.0" prefWidth="79.0" />
-        <Label layoutX="105.0" layoutY="124.0" text="ADD PRODCUT">
+        <TextField fx:id="addProductId" layoutX="97.0" layoutY="181.0" />
+        <TextField fx:id="addProductName" layoutX="97.0" layoutY="222.0" />
+        <TextField fx:id="addProductInventory" layoutX="97.0" layoutY="259.0" prefHeight="25.0" prefWidth="79.0" />
+        <TextField fx:id="addProductPrice" layoutX="97.0" layoutY="301.0" prefHeight="25.0" prefWidth="79.0" />
+        <TextField fx:id="addProductMax" layoutX="97.0" layoutY="338.0" prefHeight="25.0" prefWidth="79.0" />
+        <TextField fx:id="addProductMin" layoutX="260.0" layoutY="338.0" prefHeight="25.0" prefWidth="79.0" />
+        <Label layoutX="105.0" layoutY="124.0" text="ADD PRODUCT">
             <font>
                 <Font name="Arial Bold" size="18.0" />
             </font></Label>
@@ -50,28 +50,28 @@
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Label>
-      <TableView layoutX="389.0" layoutY="34.0" prefHeight="200.0" prefWidth="384.0">
+      <TableView fx:id="productAddPartTable" layoutX="389.0" layoutY="34.0" prefHeight="200.0" prefWidth="384.0">
         <columns>
-          <TableColumn prefWidth="54.0" text="Part ID" />
-            <TableColumn prefWidth="112.0" text="Part Name" />
-            <TableColumn prefWidth="95.0" text="Inventory Level" />
-          <TableColumn prefWidth="122.0" text="Price/Cost Per Unit" />
+          <TableColumn fx:id="productAddIdColumn" prefWidth="54.0" text="Part ID" />
+            <TableColumn fx:id="productAddNameColumn" prefWidth="112.0" text="Part Name" />
+            <TableColumn fx:id="productAddInventoryColumn" prefWidth="95.0" text="Inventory Level" />
+          <TableColumn fx:id="productAddPriceColumn" prefWidth="122.0" text="Price/Cost Per Unit" />
         </columns>
       </TableView>
-        <TableView layoutX="389.0" layoutY="298.0" prefHeight="200.0" prefWidth="384.0">
+        <TableView fx:id="productRemovePartTable" layoutX="389.0" layoutY="298.0" prefHeight="200.0" prefWidth="384.0">
             <columns>
-                <TableColumn prefWidth="54.0" text="Part ID" />
-                <TableColumn prefWidth="112.0" text="Part Name" />
-                <TableColumn prefWidth="95.0" text="Inventory Level" />
-                <TableColumn prefWidth="122.0" text="Price/Cost Per Unit" />
+                <TableColumn fx:id="productRemoveIdColumn" prefWidth="54.0" text="Part ID" />
+                <TableColumn fx:id="productRemoveNameColumn" prefWidth="112.0" text="Part Name" />
+                <TableColumn fx:id="productRemoveInventoryColumn" prefWidth="95.0" text="Inventory Level" />
+                <TableColumn fx:id="productRemovePriceColumn" prefWidth="122.0" text="Price/Cost Per Unit" />
             </columns>
         </TableView>
-      <Button layoutX="509.0" layoutY="246.0" mnemonicParsing="false" text="ADD ASSOCIATED PART">
+      <Button layoutX="509.0" layoutY="246.0" mnemonicParsing="false" onAction="#addAssociatedPart" text="ADD ASSOCIATED PART">
          <font>
             <Font name="System Bold Italic" size="11.0" />
          </font>
       </Button>
-      <Button layoutX="498.0" layoutY="510.0" mnemonicParsing="false" text="REMOVE ASSOCIATED PART">
+      <Button layoutX="498.0" layoutY="510.0" mnemonicParsing="false" onAction="#removeAssociatedPart" text="REMOVE ASSOCIATED PART">
          <font>
             <Font name="System Bold Italic" size="11.0" />
          </font>

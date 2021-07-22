@@ -12,7 +12,7 @@
         <TextField layoutX="97.0" layoutY="301.0" prefHeight="25.0" prefWidth="79.0" />
         <TextField layoutX="97.0" layoutY="338.0" prefHeight="25.0" prefWidth="79.0" />
         <TextField layoutX="260.0" layoutY="338.0" prefHeight="25.0" prefWidth="79.0" />
-        <Label layoutX="94.0" layoutY="124.0" text="MODIFY PRODCUT">
+        <Label layoutX="90.0" layoutY="124.0" text="MODIFY PRODUCT">
             <font>
                 <Font name="Arial Bold" size="18.0" />
             </font></Label>
