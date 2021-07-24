@@ -34,7 +34,7 @@
             <Font name="System Bold" size="10.0" />
          </font>
       </Button>
-      <Button layoutX="160.0" layoutY="309.0" mnemonicParsing="false" onAction="#deletePart" text="DELETE">
+      <Button layoutX="160.0" layoutY="309.0" mnemonicParsing="false" onAction="#removePart" text="DELETE">
          <font>
             <Font name="System Bold" size="10.0" />
          </font>
@@ -64,7 +64,7 @@
             <Font name="System Bold" size="10.0" />
          </font>
       </Button>
-      <Button layoutX="647.0" layoutY="308.0" mnemonicParsing="false" onAction="#deleteProduct" text="DELETE">
+      <Button layoutX="647.0" layoutY="308.0" mnemonicParsing="false" onAction="#removeProduct" text="DELETE">
          <font>
             <Font name="System Bold" size="10.0" />
          </font>

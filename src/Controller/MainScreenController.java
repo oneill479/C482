@@ -16,6 +16,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
+import static Model.Inventory.getAllParts;
+import static Model.Inventory.getAllProducts;
+
+import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -55,12 +59,17 @@ public class MainScreenController implements Initializable {
         productInventoryColumn.setCellValueFactory(new PropertyValueFactory<>("stock"));
         productPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
 
+        ObservableList<Part> partList = getAllParts();
+        ObservableList<Product> productList = getAllProducts();
 
-        mainParts.add(new Part(1, "Wheel", 7.99, 4, 2, 8) {
+        for (Part part : partList) {
+            mainParts.add(part);
+        }
 
-        });
+        for (Product product : productList) {
+            mainProducts.add(product);
+        }
 
-        mainProducts.add(new Product(1, "Bike", 59.99, 3, 2, 4));
     }
 
     public void toAddParts(ActionEvent actionEvent) throws IOException {
@@ -81,9 +90,11 @@ public class MainScreenController implements Initializable {
         stage.show();
     }
 
+    // Error resolving onAction='#addAssociatedPart', either the event handler is not in the Namespace or there is an error in the script.
     public void toAddProducts(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/View/AddProducts.fxml"));
         Stage stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
+        System.out.println(stage);
         Scene scene = new Scene(root);
         stage.setTitle("Add Products");
         stage.setScene(scene);
@@ -99,17 +110,21 @@ public class MainScreenController implements Initializable {
         stage.show();
     }
 
-    public void deletePart(ActionEvent actionEvent) {
+    public void removePart(ActionEvent actionEvent) {
         Part selectedPart = (Part) partTable.getSelectionModel().getSelectedItem();
-
+        System.out.println(selectedPart);
         if(selectedPart == null) return;
-        mainParts.remove(selectedPart);
+        boolean result = Model.Inventory.deletePart(selectedPart);
+        if (result) mainParts.remove(selectedPart);
+        else JOptionPane.showMessageDialog(null, "Could not delete Part!");
     }
 
-    public void deleteProduct(ActionEvent actionEvent) {
+    public void removeProduct(ActionEvent actionEvent) {
         Product selectedProduct = (Product) productTable.getSelectionModel().getSelectedItem();
         if(selectedProduct == null) return;
-        mainProducts.remove(selectedProduct);
+        boolean result = Model.Inventory.deleteProduct(selectedProduct);
+        if (result) mainProducts.remove(selectedProduct);
+        else JOptionPane.showMessageDialog(null, "Could not delete Product!");
     }
 
     public void exit() {

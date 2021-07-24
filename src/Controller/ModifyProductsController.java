@@ -28,4 +28,12 @@ public class ModifyProductsController implements Initializable {
         stage.show();
     }
 
+    public void addAssociatedPart(ActionEvent actionEvent) {
+    }
+
+    public void removeAssociatedPart(ActionEvent actionEvent) {
+    }
+
+    public void modifyProduct(ActionEvent actionEvent) {
+    }
 }

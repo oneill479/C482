@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -20,17 +21,17 @@ import java.util.ResourceBundle;
 
 public class AddProductsController implements Initializable {
 
-    public TableView productAddPartTable;
-    public TableColumn productAddIdColumn;
-    public TableColumn productAddNameColumn;
-    public TableColumn productAddInventoryColumn;
-    public TableColumn productAddPriceColumn;
+    public TableView addPartTable;
+    public TableColumn addIdColumn;
+    public TableColumn addNameColumn;
+    public TableColumn addInventoryColumn;
+    public TableColumn addPriceColumn;
 
-    public TableView productRemovePartTable;
-    public TableColumn productRemoveIdColumn;
-    public TableColumn productRemoveNameColumn;
-    public TableColumn productRemoveInventoryColumn;
-    public TableColumn productRemovePriceColumn;
+    public TableView removePartTable;
+    public TableColumn removeIdColumn;
+    public TableColumn removeNameColumn;
+    public TableColumn removeInventoryColumn;
+    public TableColumn removePriceColumn;
 
     public TextField addProductId;
     public TextField addProductName;
@@ -45,8 +46,21 @@ public class AddProductsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        productAddPartTable.setItems(addPart);
+        addPartTable.setItems(addPart);
+        addIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        addNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        addInventoryColumn.setCellValueFactory(new PropertyValueFactory<>("stock"));
+        addPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+        removePartTable.setItems(removePart);
+        removeIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        removeNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        removeInventoryColumn.setCellValueFactory(new PropertyValueFactory<>("stock"));
+        removePriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+
     }
+
+
 
     public void toMain(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/View/MainScreen.fxml"));
@@ -57,4 +71,12 @@ public class AddProductsController implements Initializable {
         stage.show();
     }
 
+    public void addAssociatedPart(ActionEvent actionEvent) {
+    }
+
+    public void removeAssociatedPart(ActionEvent actionEvent) {
+    }
+
+    public void addProduct(ActionEvent actionEvent) {
+    }
 }
