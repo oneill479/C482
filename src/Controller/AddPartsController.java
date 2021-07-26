@@ -15,6 +15,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -27,6 +28,7 @@ public class AddPartsController implements Initializable {
     private int id, stock, min, max, machineId, listLength;
     private String name, company;
     private double price;
+    boolean internal, external;
 
     public Label sourceText;
     public TextField partId;
@@ -45,6 +47,8 @@ public class AddPartsController implements Initializable {
         listLength = parts.size();
         id = listLength + 1;
         partId.setText(String.valueOf(id) + " (AUTO GENERATED)");
+        internal = true;
+        external = false;
     }
 
     public void toMain(ActionEvent actionEvent) throws IOException {
@@ -57,35 +61,48 @@ public class AddPartsController implements Initializable {
     }
 
     public void addNewPart(ActionEvent actionEvent) {
+        String errorStr = checkInputs();
 
-        name = partName.getText();
-        stock = Integer.parseInt(partInventory.getText());
-        price = Double.parseDouble(partPrice.getText());
-        min = Integer.parseInt(partMin.getText());
-        max = Integer.parseInt(partMax.getText());
+        if (errorStr == "") {
+            name = partName.getText();
+            stock = Integer.parseInt(partInventory.getText());
+            price = Double.parseDouble(partPrice.getText());
+            min = Integer.parseInt(partMin.getText());
+            max = Integer.parseInt(partMax.getText());
 
-        if (inHouse.isSelected()) {
-            machineId = Integer.parseInt(partMultiChoice.getText());
-            Part newPart = new InHouse(id, name, price, stock, min, max, machineId);
-            addPart(newPart);
+            if (inHouse.isSelected()) {
+                machineId = Integer.parseInt(partMultiChoice.getText());
+                Part newPart = new InHouse(id, name, price, stock, min, max, machineId);
+                addPart(newPart);
+            }
+            if (outsourced.isSelected()) {
+                company = partMultiChoice.getText();
+                Part newPart = new Outsourced(id, name, price, stock, min, max, company);
+                addPart(newPart);
+            }
+
         }
-        if (outsourced.isSelected()) {
-            company = partMultiChoice.getText();
-            Part newPart = new Outsourced(id, name, price, stock, min, max, company);
-            addPart(newPart);
+        else {
+            JOptionPane.showMessageDialog(null, errorStr);
         }
+
     }
 
     public void setInHouse(ActionEvent actionEvent) {
+        internal = true;
+        external = false;
         sourceText.setText("Machine ID");
     }
 
     public void setOutsourced(ActionEvent actionEvent) {
+        external = true;
+        internal = false;
         sourceText.setText("Company");
     }
 
     public boolean isLetters(String text) {
-        char[] textArray = text.toCharArray();
+        String trimmed = text.trim();
+        char[] textArray = trimmed.toCharArray();
 
         for (char index : textArray) {
             if(!Character.isLetter(index)) return false;
@@ -93,29 +110,110 @@ public class AddPartsController implements Initializable {
         return true;
     }
 
-    public boolean isNumber(String text) {
-        char[] textArray = text.toCharArray();
+    /**
+     *
+     * @param text
+     * @return
+     */
+    public boolean isInteger(String text) {
+        int num;
 
-        for (char index : textArray) {
-            if(!Character.isDigit(index)) return false;
+        try {
+            num = Integer.parseInt(text);
+            return true;
         }
-        return true;
+        catch (NumberFormatException e) {
+            return false;
+        }
+
     }
 
+    /**
+     *
+     * @param text
+     * @return
+     */
+    public boolean isDecimal(String text) {
+        double num;
+
+        try {
+            num = Double.parseDouble(text);
+            return true;
+        }
+        catch (NumberFormatException e) {
+            return false;
+        }
+
+    }
+
+
     public String checkInputs () {
-        String error  = "";
+        StringBuilder errorBuild = new StringBuilder();
+        int numError = 0;
+        String error;
 
         // name check
-        if (partName.getText().isEmpty()) error.concat("Name cannot be empty\n");
-        if (!isLetters(partName.getText())) error.concat("Name must be only letters\n");
-        // inventory check
-        if (partInventory.getText().isEmpty()) error.concat("Name cannot be empty\n");
-        else if (isNumber(partInventory.getText())) {
-
+        if (partName.getText().isEmpty()) {
+            errorBuild.append("Name cannot be empty\n");
         }
-        else error.concat("Inventory must be a number\n");
-        //if (partInventory.getText() < partMin.getText()) error.concat("Inventory cannot be less than Min");
-        //if (partInventory.getText() < partMax.getText()) error.concat("Inventory cannot be greater than Max");
+        else if (!isLetters(partName.getText())) errorBuild.append("Name must be only letters\n");
+        // price
+        if (partPrice.getText().isEmpty()) errorBuild.append("Price cannot be empty\n");
+        else if (!isDecimal(partPrice.getText())) errorBuild.append("Price must be a number\n");
+
+        // max
+        if (partMax.getText().isEmpty()) {
+            errorBuild.append("Price cannot be empty\n");
+            numError++;
+        }
+        else if (!isInteger(partMax.getText())) {
+            errorBuild.append("Max must be a number with no decimal\n");
+            numError++;
+        }
+        // min
+        if (partMin.getText().isEmpty()) {
+            errorBuild.append("Price cannot be empty\n");
+            numError++;
+        }
+        else if (!isInteger(partMax.getText())) {
+            errorBuild.append("Min must be a number with no decimal\n");
+            numError++;
+        }
+        // inventory check
+        if (partInventory.getText().isEmpty()) {
+            errorBuild.append("Inventory cannot be empty\n");
+            numError++;
+        }
+        else if (!isInteger(partInventory.getText())) {
+            errorBuild.append("Inventory must be a number with no decimal\n");
+            numError++;
+        }
+
+        if (numError == 0) {
+            if (Integer.parseInt(partMax.getText()) <= Integer.parseInt(partMin.getText())) {
+                errorBuild.append("Max must be greater than min\n");
+            }
+            else if (Integer.parseInt(partInventory.getText()) < Integer.parseInt(partMin.getText())) {
+                errorBuild.append("Inventory must be greater than or equal to min\n");
+            }
+            else if (Integer.parseInt(partInventory.getText()) > Integer.parseInt(partMax.getText())) {
+                errorBuild.append("Inventory must be less than or equal to max\n");
+            }
+        }
+
+        // machine id
+        if (internal) {
+            if (partMultiChoice.getText().isEmpty()) errorBuild.append("Machine ID cannot be empty\n");
+            else if (!isInteger(partMax.getText())) errorBuild.append("Machine ID must be a number with no decimal\n");
+        }
+        // company name
+        if (external) {
+            if (partMultiChoice.getText().isEmpty()) errorBuild.append("Company Name cannot be empty\n");
+            else if (!isLetters(partName.getText())) errorBuild.append("Company Name must be only letters\n");
+        }
+
+        error = errorBuild.toString();
+        return error;
 
     }
 
