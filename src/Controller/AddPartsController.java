@@ -52,6 +52,7 @@ public class AddPartsController implements Initializable {
     }
 
     public void toMain(ActionEvent actionEvent) throws IOException {
+        System.out.println(actionEvent);
         Parent root = FXMLLoader.load(getClass().getResource("/View/MainScreen.fxml"));
         Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
@@ -60,10 +61,10 @@ public class AddPartsController implements Initializable {
         stage.show();
     }
 
-    public void addNewPart(ActionEvent actionEvent) {
+    public void addNewPart(ActionEvent actionEvent) throws IOException {
         String errorStr = checkInputs();
 
-        if (errorStr == "") {
+        if (errorStr.isEmpty()) {
             name = partName.getText();
             stock = Integer.parseInt(partInventory.getText());
             price = Double.parseDouble(partPrice.getText());
@@ -81,8 +82,12 @@ public class AddPartsController implements Initializable {
                 addPart(newPart);
             }
 
+            // after save go back to main screen
+            toMain(actionEvent);
+
         }
         else {
+            // show error string to user
             JOptionPane.showMessageDialog(null, errorStr);
         }
 
@@ -101,7 +106,7 @@ public class AddPartsController implements Initializable {
     }
 
     public boolean isLetters(String text) {
-        String trimmed = text.trim();
+        String trimmed = text.replaceAll("\\s+","");
         char[] textArray = trimmed.toCharArray();
 
         for (char index : textArray) {
@@ -145,7 +150,6 @@ public class AddPartsController implements Initializable {
         }
 
     }
-
 
     public String checkInputs () {
         StringBuilder errorBuild = new StringBuilder();
@@ -216,12 +220,5 @@ public class AddPartsController implements Initializable {
         return error;
 
     }
-
-
-    /*Min should be less than Max; and Inv should be between those two values.
-    The user should not delete a product that has a part associated with it.
-    The application confirms the “Delete” and “Remove” actions.
-    The application will not crash when inappropriate user data is entered in the forms; instead, error messages should be generated.*/
-
 
 }

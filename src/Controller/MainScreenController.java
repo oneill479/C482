@@ -22,6 +22,7 @@ import static Model.Inventory.getAllProducts;
 import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 public class MainScreenController implements Initializable {
@@ -43,6 +44,8 @@ public class MainScreenController implements Initializable {
 
     private ObservableList<Part> mainParts = FXCollections.observableArrayList();
     private ObservableList<Product> mainProducts = FXCollections.observableArrayList();
+
+    private static Part selectedPart;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -81,13 +84,26 @@ public class MainScreenController implements Initializable {
         stage.show();
     }
 
+    public static Part getPart() {
+        return selectedPart;
+    }
+
     public void toModifyParts(ActionEvent actionEvent) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/View/ModifyParts.fxml"));
-        Stage stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setTitle("Modify Parts");
-        stage.setScene(scene);
-        stage.show();
+        selectedPart = (Part) partTable.getSelectionModel().getSelectedItem();
+
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/View/ModifyParts.fxml"));
+            Stage stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setUserData(selectedPart);
+            stage.setTitle("Modify Parts");
+            stage.setScene(scene);
+            stage.show();
+        }
+        catch (IOException e) {
+
+        }
+
     }
 
     // Error resolving onAction='#addAssociatedPart', either the event handler is not in the Namespace or there is an error in the script.
