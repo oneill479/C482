@@ -62,7 +62,7 @@ public class AddPartsController implements Initializable {
     }
 
     public void addNewPart(ActionEvent actionEvent) throws IOException {
-        String errorStr = checkInputs();
+        String errorStr = checkInputs(partName, partPrice, partMax, partMin, partInventory, partMultiChoice, internal, external);
 
         if (errorStr.isEmpty()) {
             name = partName.getText();
@@ -105,7 +105,7 @@ public class AddPartsController implements Initializable {
         sourceText.setText("Company");
     }
 
-    public boolean isLetters(String text) {
+    public static boolean isLetters(String text) {
         String trimmed = text.replaceAll("\\s+","");
         char[] textArray = trimmed.toCharArray();
 
@@ -120,7 +120,7 @@ public class AddPartsController implements Initializable {
      * @param text
      * @return
      */
-    public boolean isInteger(String text) {
+    public static boolean isInteger(String text) {
         int num;
 
         try {
@@ -138,7 +138,7 @@ public class AddPartsController implements Initializable {
      * @param text
      * @return
      */
-    public boolean isDecimal(String text) {
+    public static boolean isDecimal(String text) {
         double num;
 
         try {
@@ -151,69 +151,69 @@ public class AddPartsController implements Initializable {
 
     }
 
-    public String checkInputs () {
+    public static String checkInputs(TextField name, TextField price, TextField max, TextField min, TextField inventory, TextField multiChoice, boolean in, boolean out) {
         StringBuilder errorBuild = new StringBuilder();
         int numError = 0;
         String error;
 
         // name check
-        if (partName.getText().isEmpty()) {
+        if (name.getText().isEmpty()) {
             errorBuild.append("Name cannot be empty\n");
         }
-        else if (!isLetters(partName.getText())) errorBuild.append("Name must be only letters\n");
+        else if (!isLetters(name.getText())) errorBuild.append("Name must be only letters\n");
         // price
-        if (partPrice.getText().isEmpty()) errorBuild.append("Price cannot be empty\n");
-        else if (!isDecimal(partPrice.getText())) errorBuild.append("Price must be a number\n");
+        if (price.getText().isEmpty()) errorBuild.append("Price cannot be empty\n");
+        else if (!isDecimal(price.getText())) errorBuild.append("Price must be a number\n");
 
         // max
-        if (partMax.getText().isEmpty()) {
+        if (max.getText().isEmpty()) {
             errorBuild.append("Price cannot be empty\n");
             numError++;
         }
-        else if (!isInteger(partMax.getText())) {
+        else if (!isInteger(max.getText())) {
             errorBuild.append("Max must be a number with no decimal\n");
             numError++;
         }
         // min
-        if (partMin.getText().isEmpty()) {
+        if (min.getText().isEmpty()) {
             errorBuild.append("Price cannot be empty\n");
             numError++;
         }
-        else if (!isInteger(partMax.getText())) {
+        else if (!isInteger(min.getText())) {
             errorBuild.append("Min must be a number with no decimal\n");
             numError++;
         }
         // inventory check
-        if (partInventory.getText().isEmpty()) {
+        if (inventory.getText().isEmpty()) {
             errorBuild.append("Inventory cannot be empty\n");
             numError++;
         }
-        else if (!isInteger(partInventory.getText())) {
+        else if (!isInteger(inventory.getText())) {
             errorBuild.append("Inventory must be a number with no decimal\n");
             numError++;
         }
 
         if (numError == 0) {
-            if (Integer.parseInt(partMax.getText()) <= Integer.parseInt(partMin.getText())) {
+            if (Integer.parseInt(max.getText()) <= Integer.parseInt(min.getText())) {
                 errorBuild.append("Max must be greater than min\n");
             }
-            else if (Integer.parseInt(partInventory.getText()) < Integer.parseInt(partMin.getText())) {
+            else if (Integer.parseInt(inventory.getText()) < Integer.parseInt(min.getText())) {
                 errorBuild.append("Inventory must be greater than or equal to min\n");
             }
-            else if (Integer.parseInt(partInventory.getText()) > Integer.parseInt(partMax.getText())) {
+            else if (Integer.parseInt(inventory.getText()) > Integer.parseInt(max.getText())) {
                 errorBuild.append("Inventory must be less than or equal to max\n");
             }
         }
 
         // machine id
-        if (internal) {
-            if (partMultiChoice.getText().isEmpty()) errorBuild.append("Machine ID cannot be empty\n");
-            else if (!isInteger(partMax.getText())) errorBuild.append("Machine ID must be a number with no decimal\n");
+        if (in) {
+            if (multiChoice.getText().isEmpty()) errorBuild.append("Machine ID cannot be empty\n");
+            else if (!isInteger(max.getText())) errorBuild.append("Machine ID must be a number with no decimal\n");
         }
         // company name
-        if (external) {
-            if (partMultiChoice.getText().isEmpty()) errorBuild.append("Company Name cannot be empty\n");
-            else if (!isLetters(partName.getText())) errorBuild.append("Company Name must be only letters\n");
+        if (out) {
+            if (multiChoice.getText().isEmpty()) errorBuild.append("Company Name cannot be empty\n");
+            else if (!isLetters(multiChoice.getText())) errorBuild.append("Company Name must be only letters\n");
         }
 
         error = errorBuild.toString();
