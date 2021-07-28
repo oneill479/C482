@@ -1,7 +1,5 @@
 package Controller;
 
-import Model.InHouse;
-import Model.Outsourced;
 import Model.Part;
 import Model.Product;
 import javafx.collections.FXCollections;
@@ -73,6 +71,12 @@ public class AddProductsController implements Initializable {
         removeInventoryColumn.setCellValueFactory(new PropertyValueFactory<>("stock"));
         removePriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
 
+        ObservableList<Part> partList = getAllParts();
+
+        for (Part part : partList) {
+            addPart.add(part);
+        }
+
     }
 
 
@@ -87,7 +91,7 @@ public class AddProductsController implements Initializable {
     }
 
     public void addNewProduct(ActionEvent actionEvent) throws IOException {
-        String errorStr = checkInputs();
+        String errorStr = checkInputs(productName, productPrice, productMax, productMin, productInventory);
 
         if (errorStr.isEmpty()) {
             name = productName.getText();
@@ -96,7 +100,12 @@ public class AddProductsController implements Initializable {
             min = Integer.parseInt(productMin.getText());
             max = Integer.parseInt(productMax.getText());
 
-            Product newProduct = new Product(id, name, price, stock, min, max );
+            Product newProduct = new Product(id, name, price, stock, min, max);
+            // add all associated parts
+            for (Part part : removePart) {
+                newProduct.addAssociatedPart(part);
+            }
+            // add product to inventory
             addProduct(newProduct);
 
             // after save go back to main screen
@@ -110,13 +119,27 @@ public class AddProductsController implements Initializable {
 
     }
 
-    public void addAssociatedPart(ActionEvent actionEvent) {
+    public void addPart(ActionEvent actionEvent) {
+
+            if ((Part) addPartTable.getSelectionModel().getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(null, "You must select/highlight a part!");
+            }
+            else {
+                removePart.add((Part) addPartTable.getSelectionModel().getSelectedItem());
+            }
+
     }
 
-    public void removeAssociatedPart(ActionEvent actionEvent) {
+    public void removePart(ActionEvent actionEvent) {
+        if ((Part) removePartTable.getSelectionModel().getSelectedItem() == null) {
+            JOptionPane.showMessageDialog(null, "You must select/highlight a part!");
+        }
+        else {
+            removePart.remove((Part) addPartTable.getSelectionModel().getSelectedItem());
+        }
     }
 
-    public boolean isLetters(String text) {
+    public static boolean isLetters(String text) {
         String trimmed = text.replaceAll("\\s+","");
         char[] textArray = trimmed.toCharArray();
 
@@ -131,7 +154,7 @@ public class AddProductsController implements Initializable {
      * @param text
      * @return
      */
-    public boolean isInteger(String text) {
+    public static boolean isInteger(String text) {
         int num;
 
         try {
@@ -149,7 +172,7 @@ public class AddProductsController implements Initializable {
      * @param text
      * @return
      */
-    public boolean isDecimal(String text) {
+    public static boolean isDecimal(String text) {
         double num;
 
         try {
@@ -162,54 +185,54 @@ public class AddProductsController implements Initializable {
 
     }
 
-    public String checkInputs () {
+    public static String checkInputs(TextField name, TextField price, TextField max, TextField min, TextField inventory) {
         StringBuilder errorBuild = new StringBuilder();
         int numError = 0;
         String error;
 
         // name check
-        if (productName.getText().isEmpty()) errorBuild.append("Name cannot be empty\n");
-        else if (!isLetters(productName.getText())) errorBuild.append("Name must be only letters\n");
+        if (name.getText().isEmpty()) errorBuild.append("Name cannot be empty\n");
+        else if (!isLetters(name.getText())) errorBuild.append("Name must be only letters\n");
         // price
-        if (productPrice.getText().isEmpty()) errorBuild.append("Price cannot be empty\n");
-        else if (!isDecimal(productPrice.getText())) errorBuild.append("Price must be a number\n");
+        if (price.getText().isEmpty()) errorBuild.append("Price cannot be empty\n");
+        else if (!isDecimal(price.getText())) errorBuild.append("Price must be a number\n");
 
         // max
-        if (productMax.getText().isEmpty()) {
-            errorBuild.append("Price cannot be empty\n");
+        if (max.getText().isEmpty()) {
+            errorBuild.append("Max cannot be empty\n");
             numError++;
         }
-        else if (!isInteger(productMax.getText())) {
+        else if (!isInteger(max.getText())) {
             errorBuild.append("Max must be a number with no decimal\n");
             numError++;
         }
         // min
-        if (productMin.getText().isEmpty()) {
-            errorBuild.append("Price cannot be empty\n");
+        if (min.getText().isEmpty()) {
+            errorBuild.append("Min cannot be empty\n");
             numError++;
         }
-        else if (!isInteger(productMin.getText())) {
+        else if (!isInteger(min.getText())) {
             errorBuild.append("Min must be a number with no decimal\n");
             numError++;
         }
         // inventory check
-        if (productInventory.getText().isEmpty()) {
+        if (inventory.getText().isEmpty()) {
             errorBuild.append("Inventory cannot be empty\n");
             numError++;
         }
-        else if (!isInteger(productInventory.getText())) {
+        else if (!isInteger(inventory.getText())) {
             errorBuild.append("Inventory must be a number with no decimal\n");
             numError++;
         }
 
         if (numError == 0) {
-            if (Integer.parseInt(productMax.getText()) <= Integer.parseInt(productMin.getText())) {
+            if (Integer.parseInt(max.getText()) <= Integer.parseInt(min.getText())) {
                 errorBuild.append("Max must be greater than min\n");
             }
-            else if (Integer.parseInt(productInventory.getText()) < Integer.parseInt(productMin.getText())) {
+            else if (Integer.parseInt(inventory.getText()) < Integer.parseInt(min.getText())) {
                 errorBuild.append("Inventory must be greater than or equal to min\n");
             }
-            else if (Integer.parseInt(productInventory.getText()) > Integer.parseInt(productMax.getText())) {
+            else if (Integer.parseInt(inventory.getText()) > Integer.parseInt(max.getText())) {
                 errorBuild.append("Inventory must be less than or equal to max\n");
             }
         }

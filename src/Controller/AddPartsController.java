@@ -28,7 +28,7 @@ public class AddPartsController implements Initializable {
     private int id, stock, min, max, machineId, listLength;
     private String name, company;
     private double price;
-    boolean internal, external;
+    private boolean internal, external;
 
     public Label sourceText;
     public TextField partId;

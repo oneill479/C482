@@ -15,19 +15,19 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static Model.Inventory.addPart;
 import static Model.Inventory.updatePart;
 
 public class ModifyPartsController implements Initializable {
 
-    private int id, stock, min, max, machineId, listLength;
+    private int id, stock, min, max, machineId;
     private String name, company;
     private double price;
-    boolean internal, external;
+    private boolean internal, external;
 
     private Part selectedPart;
 
@@ -41,6 +41,9 @@ public class ModifyPartsController implements Initializable {
     public TextField partMin;
     public RadioButton inHouse;
     public RadioButton outsourced;
+
+    InHouse in;
+    Outsourced out;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -56,7 +59,7 @@ public class ModifyPartsController implements Initializable {
 
         if (selectedPart.getClass() == InHouse.class) {
             inHouse.setSelected(true);
-            InHouse in = (InHouse) selectedPart;
+            in = (InHouse) selectedPart;
             partMultiChoice.setText(Integer.toString(in.getMachineId()));
             internal = true;
             external = false;
@@ -65,7 +68,7 @@ public class ModifyPartsController implements Initializable {
         if (selectedPart.getClass() == Outsourced.class) {
             outsourced.setSelected(true);
             sourceText.setText("Company");
-            Outsourced out = (Outsourced) selectedPart;
+            out = (Outsourced) selectedPart;
             partMultiChoice.setText(out.getCompanyName());
             external = true;
             internal = false;
@@ -86,15 +89,27 @@ public class ModifyPartsController implements Initializable {
         internal = true;
         external = false;
         sourceText.setText("Machine ID");
+        if (selectedPart.getClass() == InHouse.class) {
+            partMultiChoice.setText(Integer.toString(in.getMachineId()));
+        }
+        else {
+            partMultiChoice.setText("");
+        }
     }
 
     public void setOutsourced(ActionEvent actionEvent) {
         external = true;
         internal = false;
         sourceText.setText("Company");
+        if (selectedPart.getClass() == Outsourced.class) {
+            partMultiChoice.setText(out.getCompanyName());
+        }
+        else {
+            partMultiChoice.setText("");
+        }
     }
 
-    public void addNewPart(ActionEvent actionEvent) throws IOException {
+    public void modifyPart(ActionEvent actionEvent) throws IOException {
 
         String errorStr = AddPartsController.checkInputs(partName, partPrice, partMax, partMin, partInventory, partMultiChoice, internal, external);
 
@@ -120,6 +135,10 @@ public class ModifyPartsController implements Initializable {
             // after save go back to main screen
             toMain(actionEvent);
 
+        }
+        else {
+            // show error string to user
+            JOptionPane.showMessageDialog(null, errorStr);
         }
     }
 }

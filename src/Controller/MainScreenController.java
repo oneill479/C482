@@ -45,6 +45,7 @@ public class MainScreenController implements Initializable {
     private ObservableList<Product> mainProducts = FXCollections.observableArrayList();
 
     private static Part selectedPart;
+    private static Product selectedProduct;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -94,13 +95,12 @@ public class MainScreenController implements Initializable {
             Parent root = FXMLLoader.load(getClass().getResource("/View/ModifyParts.fxml"));
             Stage stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
-            stage.setUserData(selectedPart);
             stage.setTitle("Modify Parts");
             stage.setScene(scene);
             stage.show();
         }
         catch (IOException e) {
-
+            JOptionPane.showMessageDialog(null, "You must select/highlight a part!");
         }
 
     }
@@ -116,16 +116,29 @@ public class MainScreenController implements Initializable {
         stage.show();
     }
 
+    public static Product getProduct() {
+        return selectedProduct;
+    }
+
     public void toModifyProducts(ActionEvent actionEvent) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/View/ModifyProducts.fxml"));
-        Stage stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setTitle("Modify Products");
-        stage.setScene(scene);
-        stage.show();
+        selectedProduct = (Product) productTable.getSelectionModel().getSelectedItem();
+
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/View/ModifyProducts.fxml"));
+            Stage stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setTitle("Modify Products");
+            stage.setScene(scene);
+            stage.show();
+        }
+        catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "You must select/highlight a part!");
+        }
     }
 
     public void removePart(ActionEvent actionEvent) {
+        selectedPart = (Part) partTable.getSelectionModel().getSelectedItem();
+
         Part selectedPart = (Part) partTable.getSelectionModel().getSelectedItem();
         System.out.println(selectedPart);
         if(selectedPart == null) return;
