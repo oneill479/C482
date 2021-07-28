@@ -25,9 +25,7 @@ import static Model.Inventory.*;
 
 public class ModifyProductsController implements Initializable {
 
-    private int id, stock, min, max;
-    private String name;
-    private double price;
+    private int id;
 
     private Product selectedProduct;
 
@@ -52,6 +50,7 @@ public class ModifyProductsController implements Initializable {
 
     private ObservableList<Part> addPart = FXCollections.observableArrayList();
     private ObservableList<Part> removePart = FXCollections.observableArrayList();
+    private ObservableList<Part> associatedParts = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -78,10 +77,16 @@ public class ModifyProductsController implements Initializable {
         removePriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
 
         ObservableList<Part> partList = getAllParts();
+        associatedParts = selectedProduct.getAllAssociatedParts();
 
         for (Part part : partList) {
             addPart.add(part);
         }
+
+        for (Part part : associatedParts) {
+            removePart.add(part);
+        }
+
     }
 
     public void toMain(ActionEvent actionEvent) throws IOException {
@@ -100,6 +105,7 @@ public class ModifyProductsController implements Initializable {
         }
         else {
             removePart.add((Part) addPartTable.getSelectionModel().getSelectedItem());
+            selectedProduct.addAssociatedPart((Part) addPartTable.getSelectionModel().getSelectedItem());
         }
 
     }
@@ -110,6 +116,7 @@ public class ModifyProductsController implements Initializable {
         }
         else {
             removePart.remove((Part) addPartTable.getSelectionModel().getSelectedItem());
+            selectedProduct.deleteAssociatedPart((Part) addPartTable.getSelectionModel().getSelectedItem());
         }
     }
 
@@ -118,20 +125,14 @@ public class ModifyProductsController implements Initializable {
         String errorStr = AddProductsController.checkInputs(productName, productPrice, productMax, productMin, productInventory);
 
         if (errorStr.isEmpty()) {
-            name = productName.getText();
-            stock = Integer.parseInt(productInventory.getText());
-            price = Double.parseDouble(productPrice.getText());
-            min = Integer.parseInt(productMin.getText());
-            max = Integer.parseInt(productMax.getText());
+            id = selectedProduct.getId();
+            selectedProduct.setName(productName.getText());
+            selectedProduct.setStock(Integer.parseInt(productInventory.getText()));
+            selectedProduct.setPrice(Double.parseDouble(productPrice.getText()));
+            selectedProduct.setMin(Integer.parseInt(productMin.getText()));
+            selectedProduct.setMax(Integer.parseInt(productMax.getText()));
 
-            ObservableList<Part> getAllParts = selectedProduct.getAllAssociatedParts();
-
-            for (Part part : getAllParts) {
-                selectedProduct.deleteAssociatedPart(part);
-            }
-
-            Product newProduct = new Product(id, name, price, stock, min, max);
-            updateProduct(id - 1, newProduct);
+            updateProduct(id - 1, selectedProduct);
 
             // after save go back to main screen
             toMain(actionEvent);

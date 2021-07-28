@@ -66,12 +66,12 @@
                 <TableColumn fx:id="removePriceColumn" prefWidth="122.0" text="Price/Cost Per Unit" />
             </columns>
         </TableView>
-        <Button layoutX="589.0" layoutY="246.0" mnemonicParsing="false" onAction="#addAssociatedPart" text="ADD ASSOCIATED PART">
+        <Button layoutX="589.0" layoutY="246.0" mnemonicParsing="false" onAction="#addPart" text="ADD ASSOCIATED PART">
             <font>
                 <Font name="System Bold Italic" size="11.0" />
             </font>
         </Button>
-        <Button layoutX="498.0" layoutY="510.0" mnemonicParsing="false" onAction="#removeAssociatedPart" text="REMOVE ASSOCIATED PART">
+        <Button layoutX="498.0" layoutY="510.0" mnemonicParsing="false" onAction="#removePart" text="REMOVE ASSOCIATED PART">
             <font>
                 <Font name="System Bold Italic" size="11.0" />
             </font>
