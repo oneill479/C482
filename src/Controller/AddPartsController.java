@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 import static Model.Inventory.addPart;
@@ -25,7 +26,7 @@ import static Model.Inventory.getAllParts;
 
 public class AddPartsController implements Initializable {
 
-    private int id, stock, min, max, machineId, listLength;
+    private int id, stock, min, max, machineId;
     private String name, company;
     private double price;
     private boolean internal, external;
@@ -43,12 +44,23 @@ public class AddPartsController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)  {
-        ObservableList<Part> parts = getAllParts();
-        listLength = parts.size();
-        id = listLength + 1;
-        partId.setText(String.valueOf(id) + " (AUTO GENERATED)");
+        id = getRandomPartId();
+        partId.setText(String.valueOf(id));
         internal = true;
         external = false;
+    }
+
+    public static int getRandomPartId () {
+        Random rand = new Random();
+        int upperBound = 25 + getAllParts().size();
+        int randomId = rand.nextInt(upperBound);
+
+        for (Part part : getAllParts()) {
+            if (randomId == part.getId() || randomId == 0) {
+                return getRandomPartId();
+            }
+        }
+        return randomId;
     }
 
     public void toMain(ActionEvent actionEvent) throws IOException {

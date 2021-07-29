@@ -16,21 +16,49 @@ public class Inventory {
         allProducts.add(newProduct);
     }
 
-    //public static Part lookupPart(int partId) {
+    public static Part lookupPart(int partId) {
+        ObservableList<Part> allParts = getAllParts();
 
-   // }
+        for (int i = 0; i < allParts.size(); i++) {
+            Part part = allParts.get(i);
+            if (part.getId() == partId) return part;
+        }
 
-   // public static Product lookupProduct(int productId) {
+        return null;
+   }
 
-    //}
+    public static Product lookupProduct(int productId) {
+        ObservableList<Product> allProducts = getAllProducts();
 
-    //public static ObservableList<Part> lookupPart(String partName) {
+        for (int i = 0; i < allProducts.size(); i++) {
+            Product product = allProducts.get(i);
+            if (product.getId() == productId) return product;
+        }
 
-    //}
+        return null;
+    }
 
-    //public static ObservableList<Product> lookupProduct(String productName) {
+    public static ObservableList<Part> lookupPart(String partName) {
+        ObservableList<Part> foundParts = FXCollections.observableArrayList();
+        ObservableList<Part> allParts = getAllParts();
 
-    //}
+        for (Part part : allParts) {
+            if(part.getName().toLowerCase().contains(partName)) foundParts.add(part);
+        }
+
+        return foundParts;
+    }
+
+    public static ObservableList<Product> lookupProduct(String productName) {
+        ObservableList<Product> foundProducts = FXCollections.observableArrayList();
+        ObservableList<Product> allProducts = getAllProducts();
+
+        for (Product product : allProducts) {
+            if(product.getName().toLowerCase().contains(productName)) foundProducts.add(product);
+        }
+
+        return foundProducts;
+    }
 
     public static void updatePart(int index, Part selectedPart) {
         allParts.set(index, selectedPart);

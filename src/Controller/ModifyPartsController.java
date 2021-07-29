@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static Model.Inventory.getAllParts;
 import static Model.Inventory.updatePart;
 
 public class ModifyPartsController implements Initializable {
@@ -124,12 +125,12 @@ public class ModifyPartsController implements Initializable {
             if (inHouse.isSelected()) {
                 machineId = Integer.parseInt(partMultiChoice.getText());
                 Part newPart = new InHouse(id, name, price, stock, min, max, machineId);
-                updatePart(id - 1, newPart);
+                updatePart(getAllParts().indexOf(selectedPart), newPart);
             }
             if (outsourced.isSelected()) {
                 company = partMultiChoice.getText();
                 Part newPart = new Outsourced(id, name, price, stock, min, max, company);
-                updatePart(id - 1, newPart);
+                updatePart(getAllParts().indexOf(selectedPart), newPart);
             }
 
             // after save go back to main screen

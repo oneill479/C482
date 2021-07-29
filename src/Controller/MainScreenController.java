@@ -10,19 +10,19 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-
-import static Model.Inventory.getAllParts;
-import static Model.Inventory.getAllProducts;
 
 import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
+
+import static Controller.AddPartsController.isInteger;
+import static Model.Inventory.*;
 
 public class MainScreenController implements Initializable {
 
@@ -75,6 +75,11 @@ public class MainScreenController implements Initializable {
 
     }
 
+    /**
+     *
+     * @param actionEvent Takes user to the add parts screen
+     * @throws IOException Checks to see if add parts screen will load correctly
+     */
     public void toAddParts(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/View/AddParts.fxml"));
         Stage stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
@@ -84,10 +89,19 @@ public class MainScreenController implements Initializable {
         stage.show();
     }
 
+    /**
+     *
+     * @return Returns the selected part on parts table
+     */
     public static Part getPart() {
         return selectedPart;
     }
 
+    /**
+     *
+     * @param actionEvent Takes user to the modify parts screen
+     * @throws IOException Checks to see if user has selected a part to be modified
+     */
     public void toModifyParts(ActionEvent actionEvent) throws IOException {
         selectedPart = (Part) partTable.getSelectionModel().getSelectedItem();
 
@@ -100,12 +114,21 @@ public class MainScreenController implements Initializable {
             stage.show();
         }
         catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "You must select/highlight a part!");
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Modify Parts");
+            alert.setContentText("You must select/highlight a part!");
+            alert.showAndWait();
         }
 
     }
 
     // Error resolving onAction='#addAssociatedPart', either the event handler is not in the Namespace or there is an error in the script.
+
+    /**
+     *
+     * @param actionEvent Takes user to the add products screen
+     * @throws IOException
+     */
     public void toAddProducts(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/View/AddProducts.fxml"));
         Stage stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
@@ -116,10 +139,19 @@ public class MainScreenController implements Initializable {
         stage.show();
     }
 
+    /**
+     *
+     * @return Returns the product selected in products table
+     */
     public static Product getProduct() {
         return selectedProduct;
     }
 
+    /**
+     *
+     * @param actionEvent Takes user to the modify product screen
+     * @throws IOException Checks to see if user has selected a product to be modified
+     */
     public void toModifyProducts(ActionEvent actionEvent) throws IOException {
         selectedProduct = (Product) productTable.getSelectionModel().getSelectedItem();
 
@@ -132,29 +164,118 @@ public class MainScreenController implements Initializable {
             stage.show();
         }
         catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "You must select/highlight a part!");
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Modify Products");
+            alert.setContentText("You must select/highlight a part!");
+            alert.showAndWait();
         }
     }
 
+    /**
+     *
+     * @param actionEvent Removes a part when Delete button clicked
+     */
     public void removePart(ActionEvent actionEvent) {
-        selectedPart = (Part) partTable.getSelectionModel().getSelectedItem();
-
         Part selectedPart = (Part) partTable.getSelectionModel().getSelectedItem();
-        System.out.println(selectedPart);
-        if(selectedPart == null) return;
-        boolean result = Model.Inventory.deletePart(selectedPart);
-        if (result) mainParts.remove(selectedPart);
-        else JOptionPane.showMessageDialog(null, "Could not delete Part!");
+        selectedPart = (Part) partTable.getSelectionModel().getSelectedItem();
+        if(selectedPart == null) {
+            JOptionPane.showMessageDialog(null, "You must select a part!");
+            return;
+        };
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this part?");
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            boolean exists = Model.Inventory.deletePart(selectedPart);
+            if (exists) {
+                mainParts.remove(selectedPart);
+                partSearch.setText("");
+                partTable.setItems(getAllParts());
+            }
+            else JOptionPane.showMessageDialog(null, "Could not delete Part!");
+        }
+
     }
 
+    /**
+     *
+     * @param actionEvent Removes a product when Delete button clicked
+     */
     public void removeProduct(ActionEvent actionEvent) {
         Product selectedProduct = (Product) productTable.getSelectionModel().getSelectedItem();
-        if(selectedProduct == null) return;
-        boolean result = Model.Inventory.deleteProduct(selectedProduct);
-        if (result) mainProducts.remove(selectedProduct);
-        else JOptionPane.showMessageDialog(null, "Could not delete Product!");
+        selectedProduct = (Product) productTable.getSelectionModel().getSelectedItem();
+        if(selectedProduct == null) {
+            JOptionPane.showMessageDialog(null, "You must select a product!");
+            return;
+        };
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this product?");
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            boolean exists = Model.Inventory.deleteProduct(selectedProduct);
+            if (selectedProduct.getAllAssociatedParts().size() > 0) {
+                JOptionPane.showMessageDialog(null, "Can not delete a product with associated parts!");
+            }
+            else if (exists) {
+                mainProducts.remove(selectedProduct);
+                productSearch.setText("");
+                productTable.setItems(getAllProducts());
+            }
+            else JOptionPane.showMessageDialog(null, "Could not delete Product!");
+        }
     }
 
+    /**
+     *
+     * @param keyEvent Takes in user typed text to search for part
+     */
+    public void partSearch(KeyEvent keyEvent) {
+        String search = partSearch.getText();
+        if (isInteger(search)) {
+            Part part = lookupPart(Integer.parseInt(search));
+            if (part == null) return;
+            else partTable.getSelectionModel().select(part);
+        }
+        else if (search.isEmpty()) {
+            partTable.setItems(getAllParts());
+            partTable.getSelectionModel().clearSelection();
+        }
+        else {
+            ObservableList<Part> parts = lookupPart(search);
+            partTable.setItems(parts);
+            partTable.getSelectionModel().selectFirst();
+        }
+
+    }
+
+    /**
+     *
+     * @param keyEvent Takes in user typed text to search for product
+     */
+    public void productSearch(KeyEvent keyEvent) {
+        String search = productSearch.getText();
+        if (isInteger(search)) {
+            Product product = lookupProduct(Integer.parseInt(search));
+            if (product == null) return;
+            else productTable.getSelectionModel().select(product);
+        }
+        else if (search.isEmpty()) {
+            productTable.setItems(getAllProducts());
+            productTable.getSelectionModel().clearSelection();
+        }
+        else {
+            ObservableList<Product> products = lookupProduct(search);
+            productTable.setItems(products);
+            productTable.getSelectionModel().selectFirst();
+        }
+
+    }
+
+    /**
+     * Exits program
+     */
     public void exit() {
         System.exit(0);
     }

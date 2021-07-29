@@ -14,13 +14,16 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Random;
 import java.util.ResourceBundle;
 
+import static Controller.AddPartsController.isInteger;
 import static Model.Inventory.*;
 
 public class AddProductsController implements Initializable {
@@ -47,6 +50,7 @@ public class AddProductsController implements Initializable {
     public TextField productPrice;
     public TextField productMax;
     public TextField productMin;
+    public TextField searchPart;
 
     private ObservableList<Part> addPart = FXCollections.observableArrayList();
     private ObservableList<Part> removePart = FXCollections.observableArrayList();
@@ -54,10 +58,8 @@ public class AddProductsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        ObservableList<Product> products = getAllProducts();
-        listLength = products.size();
-        id = listLength + 1;
-        productId.setText(String.valueOf(id) + " (AUTO GENERATED)");
+        id = getRandomProductId();
+        productId.setText(String.valueOf(id));
 
         addPartTable.setItems(addPart);
         addIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -79,7 +81,18 @@ public class AddProductsController implements Initializable {
 
     }
 
+    public static int getRandomProductId () {
+        Random rand = new Random();
+        int upperBound = 25 + getAllProducts().size();
+        int randomId = rand.nextInt(upperBound);
 
+        for (Product product : getAllProducts()) {
+            if (randomId == product.getId() || randomId == 0) {
+                return getRandomProductId();
+            }
+        }
+        return randomId;
+    }
 
     public void toMain(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/View/MainScreen.fxml"));
@@ -242,4 +255,22 @@ public class AddProductsController implements Initializable {
 
     }
 
+    /**
+     *
+     * @param keyEvent Takes in user typed text to search for part
+     */
+    public void searchPart(KeyEvent keyEvent) {
+        String search = searchPart.getText();
+        if (isInteger(search)) {
+            Part part = lookupPart(Integer.parseInt(search));
+            if (part == null) return;
+            else addPartTable.getSelectionModel().select(part);
+        }
+        else {
+            ObservableList<Part> parts = lookupPart(search);
+            addPartTable.setItems(parts);
+            addPartTable.getSelectionModel().selectFirst();
+        }
+
+    }
 }
