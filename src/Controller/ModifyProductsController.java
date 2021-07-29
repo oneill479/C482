@@ -136,7 +136,9 @@ public class ModifyProductsController implements Initializable {
 
             // delete any associated parts
             for (Part part : addPart) {
-                selectedProduct.deleteAssociatedPart(part);
+                if (selectedProduct.deleteAssociatedPart(part)) {
+                    JOptionPane.showMessageDialog(null, "Successfully removed associated part(s)!");
+                };
             }
             // add selected associated parts
             for (Part part : removePart) {

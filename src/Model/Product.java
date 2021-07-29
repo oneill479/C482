@@ -1,5 +1,14 @@
 package Model;
 
+/**
+ * Supplied class Product.java
+ */
+
+/**
+ *
+ * @author Caleb O'Neill
+ */
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -89,8 +98,7 @@ public class Product {
     }
 
     public boolean deleteAssociatedPart(Part selectedAssociatedPart) {
-        boolean deleted = associatedParts.remove(selectedAssociatedPart);
-        return deleted;
+        return associatedParts.remove(selectedAssociatedPart);
     }
 
     public ObservableList<Part> getAllAssociatedParts() {
