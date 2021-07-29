@@ -1,5 +1,14 @@
 package Controller;
 
+/**
+ * Class ModifyProductsController.java
+ */
+
+/**
+ *
+ * @author Caleb O'Neill
+ */
+
 import Model.Part;
 import Model.Product;
 import javafx.collections.FXCollections;
@@ -25,6 +34,9 @@ import java.util.ResourceBundle;
 import static Model.Inventory.*;
 import static Controller.AddProductsController.isInteger;
 
+/**
+ * This class modifies a product in the inventory
+ */
 public class ModifyProductsController implements Initializable {
 
     private int id;
@@ -55,6 +67,9 @@ public class ModifyProductsController implements Initializable {
     private ObservableList<Part> removePart = FXCollections.observableArrayList();
     private ObservableList<Part> associatedParts = FXCollections.observableArrayList();
 
+    /**
+     * This initializes the modify products controller
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // get selected part from main screen controller
@@ -92,6 +107,11 @@ public class ModifyProductsController implements Initializable {
 
     }
 
+    /**
+     * This method takes the user to the main screen
+     * @param actionEvent Save or cancel button being pressed
+     * @throws IOException Checks to see if the main screen will load correctly
+     */
     public void toMain(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/View/MainScreen.fxml"));
         Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -101,6 +121,10 @@ public class ModifyProductsController implements Initializable {
         stage.show();
     }
 
+    /**
+     *  This method adds an associated part
+     * @param actionEvent Add button clicked
+     */
     public void addPart(ActionEvent actionEvent) {
 
         if ((Part) addPartTable.getSelectionModel().getSelectedItem() == null) {
@@ -112,6 +136,10 @@ public class ModifyProductsController implements Initializable {
 
     }
 
+    /**
+     * This method removes an associated part
+     * @param actionEvent Remove button clicked
+     */
     public void removePart(ActionEvent actionEvent) {
         if ((Part) removePartTable.getSelectionModel().getSelectedItem() == null) {
             JOptionPane.showMessageDialog(null, "You must select/highlight a part!");
@@ -121,7 +149,11 @@ public class ModifyProductsController implements Initializable {
         }
     }
 
-    // Error - needed to update the actual product and not create a new one
+    /**
+     * This method modifies a product in the inventory
+     * @param actionEvent Save button clicked to update the product
+     * @throws IOException Checks to make sure the main screen loads correctly
+     */
     public void modifyProduct(ActionEvent actionEvent) throws IOException {
 
         String errorStr = AddProductsController.checkInputs(productName, productPrice, productMax, productMin, productInventory);
@@ -158,7 +190,7 @@ public class ModifyProductsController implements Initializable {
     }
 
     /**
-     *
+     * This method searches for a part
      * @param keyEvent Takes in user typed text to search for part
      */
     public void searchPart(KeyEvent keyEvent) {

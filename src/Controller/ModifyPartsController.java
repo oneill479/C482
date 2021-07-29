@@ -1,5 +1,15 @@
 package Controller;
 
+/**
+ * Class ModifyPartsController.java
+ */
+
+/**
+ *
+ * @author Caleb O'Neill
+ */
+
+
 import Model.Part;
 import Model.InHouse;
 import Model.Outsourced;
@@ -23,6 +33,9 @@ import java.util.ResourceBundle;
 import static Model.Inventory.getAllParts;
 import static Model.Inventory.updatePart;
 
+/**
+ * This method modifies a part in the inventory
+ */
 public class ModifyPartsController implements Initializable {
 
     private int id, stock, min, max, machineId;
@@ -46,6 +59,9 @@ public class ModifyPartsController implements Initializable {
     InHouse in;
     Outsourced out;
 
+    /**
+     * This initializes the modify parts controller
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // get selected part from main screen controller
@@ -77,6 +93,11 @@ public class ModifyPartsController implements Initializable {
 
     }
 
+    /**
+     * This method takes the user to the main screen
+     * @param  actionEvent Save or cancel button being pressed
+     * @throws IOException Checks to see if the main screen will load correctly
+     */
     public void toMain(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/View/MainScreen.fxml"));
         Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -86,6 +107,10 @@ public class ModifyPartsController implements Initializable {
         stage.show();
     }
 
+    /**
+     * This method sets the selection to In-House
+     * @param actionEvent When In-House radio button is clicked
+     */
     public void setInHouse(ActionEvent actionEvent) {
         internal = true;
         external = false;
@@ -98,6 +123,10 @@ public class ModifyPartsController implements Initializable {
         }
     }
 
+    /**
+     *  This method sets the selection to Outsourced
+     * @param actionEvent When Outsourced radio button is clicked
+     */
     public void setOutsourced(ActionEvent actionEvent) {
         external = true;
         internal = false;
@@ -110,6 +139,11 @@ public class ModifyPartsController implements Initializable {
         }
     }
 
+    /**
+     * This method modifies a part to the inventory
+     * @param actionEvent Save button clicked to modify the part
+     * @throws IOException Checks to make sure the main screen loads correctly
+     */
     public void modifyPart(ActionEvent actionEvent) throws IOException {
 
         String errorStr = AddPartsController.checkInputs(partName, partPrice, partMax, partMin, partInventory, partMultiChoice, internal, external);

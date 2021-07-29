@@ -1,3 +1,12 @@
+/**
+ * Class Main.java
+ */
+
+/**
+ *
+ * @author Caleb O'Neill
+ */
+
 import Model.Part;
 import Model.Product;
 import Model.InHouse;
@@ -12,6 +21,13 @@ import static Model.Inventory.*;
 import static Controller.AddPartsController.getRandomPartId;
 import static Controller.AddProductsController.getRandomProductId;
 
+/**
+ * Javadoc located in 'docs' folder in top level directory
+ * RUNTIME ERROR Needed to update the actual product and not create a new one (modify products controller)
+ * RUNTIME ERROR Did not set allParts and allProducts to FXCollections.observableArrayList(); (Inventory)
+ * FUTURE ENHANCEMENTS - Add photos of bikes and parks so user can make sure correct product is being checked out
+ * FUTURE ENHANCEMENTS - User login for security. Also admin access to add and delete parts and products
+ */
 public class Main extends Application {
 
     @Override

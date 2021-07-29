@@ -1,9 +1,17 @@
 package Controller;
 
+/**
+ * Class AddPartsController.java
+ */
+
+/**
+ *
+ * @author Caleb O'Neill
+ */
+
 import Model.Part;
 import Model.InHouse;
 import Model.Outsourced;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -24,6 +32,9 @@ import java.util.ResourceBundle;
 import static Model.Inventory.addPart;
 import static Model.Inventory.getAllParts;
 
+/**
+ * This class adds a part to the inventory
+ */
 public class AddPartsController implements Initializable {
 
     private int id, stock, min, max, machineId;
@@ -42,6 +53,9 @@ public class AddPartsController implements Initializable {
     public RadioButton inHouse;
     public RadioButton outsourced;
 
+    /**
+     * This initializes the add parts controller
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)  {
         id = getRandomPartId();
@@ -50,6 +64,10 @@ public class AddPartsController implements Initializable {
         external = false;
     }
 
+    /**
+     * This method generates a random part id
+     * @return Returns a generated part id
+     */
     public static int getRandomPartId () {
         Random rand = new Random();
         int upperBound = 25 + getAllParts().size();
@@ -63,6 +81,11 @@ public class AddPartsController implements Initializable {
         return randomId;
     }
 
+    /**
+     * This method takes the user to the main screen
+     * @param  actionEvent Save or cancel button being pressed
+     * @throws IOException Checks to see if the main screen will load correctly
+     */
     public void toMain(ActionEvent actionEvent) throws IOException {
         System.out.println(actionEvent);
         Parent root = FXMLLoader.load(getClass().getResource("/View/MainScreen.fxml"));
@@ -73,6 +96,11 @@ public class AddPartsController implements Initializable {
         stage.show();
     }
 
+    /**
+     * This method adds a part to the inventory
+     * @param actionEvent Save button clicked to save the part
+     * @throws IOException Checks to make sure the main screen loads correctly
+     */
     public void addNewPart(ActionEvent actionEvent) throws IOException {
         String errorStr = checkInputs(partName, partPrice, partMax, partMin, partInventory, partMultiChoice, internal, external);
 
@@ -105,18 +133,31 @@ public class AddPartsController implements Initializable {
 
     }
 
+    /**
+     * This method sets the selection to In-House
+     * @param actionEvent When In-House radio button is clicked
+     */
     public void setInHouse(ActionEvent actionEvent) {
         internal = true;
         external = false;
         sourceText.setText("Machine ID");
     }
 
+    /**
+     *  This method sets the selection to Outsourced
+     * @param actionEvent When Outsourced radio button is clicked
+     */
     public void setOutsourced(ActionEvent actionEvent) {
         external = true;
         internal = false;
         sourceText.setText("Company");
     }
 
+    /**
+     * This method checks to see if the string input has only letters or spaces
+     * @param text String to be tested for characters
+     * @return returns true if there are only characters and spaces, otherwise returns false
+     */
     public static boolean isLetters(String text) {
         String trimmed = text.replaceAll("\\s+","");
         char[] textArray = trimmed.toCharArray();
@@ -128,9 +169,9 @@ public class AddPartsController implements Initializable {
     }
 
     /**
-     *
-     * @param text
-     * @return
+     * This method checks to see if the string input has only digits
+     * @param text String to be tested for digits
+     * @return returns true if there are only digits, otherwise returns false
      */
     public static boolean isInteger(String text) {
         int num;
@@ -146,9 +187,9 @@ public class AddPartsController implements Initializable {
     }
 
     /**
-     *
-     * @param text
-     * @return
+     * This method checks to see if the input string is a decimal number
+     * @param text String to be tested as a decimal
+     * @return returns true if it is a decimal number, otherwise returns false
      */
     public static boolean isDecimal(String text) {
         double num;
@@ -163,6 +204,18 @@ public class AddPartsController implements Initializable {
 
     }
 
+    /**
+     * This method checks to see if all the text fields pass input validation
+     * @param name Part name
+     * @param price Part price
+     * @param max Part max
+     * @param min Part min
+     * @param inventory Part stock
+     * @param multiChoice Part machine id or company name
+     * @param in Part in-house
+     * @param out Part outsourced
+     * @return Returns a string of errors
+     */
     public static String checkInputs(TextField name, TextField price, TextField max, TextField min, TextField inventory, TextField multiChoice, boolean in, boolean out) {
         StringBuilder errorBuild = new StringBuilder();
         int numError = 0;
@@ -179,7 +232,7 @@ public class AddPartsController implements Initializable {
 
         // max
         if (max.getText().isEmpty()) {
-            errorBuild.append("Price cannot be empty\n");
+            errorBuild.append("Max cannot be empty\n");
             numError++;
         }
         else if (!isInteger(max.getText())) {
@@ -188,11 +241,15 @@ public class AddPartsController implements Initializable {
         }
         // min
         if (min.getText().isEmpty()) {
-            errorBuild.append("Price cannot be empty\n");
+            errorBuild.append("Min cannot be empty\n");
             numError++;
         }
         else if (!isInteger(min.getText())) {
             errorBuild.append("Min must be a number with no decimal\n");
+            numError++;
+        }
+        else if (Integer.parseInt(min.getText()) < 0) {
+            errorBuild.append("Min cannot be negative\n");
             numError++;
         }
         // inventory check

@@ -1,5 +1,13 @@
 package Model;
 
+/**
+ * Class Outsourced.java
+ */
+
+/**
+ *
+ * @author Caleb O'Neill
+ */
 public class Outsourced extends Part {
     private String companyName;
 
@@ -9,10 +17,14 @@ public class Outsourced extends Part {
     }
 
     /**
-     *
+     * This method sets the company name of the part
      * @param companyName The company name
      */
     public void setCompanyName(String companyName) {this.companyName = companyName;}
 
+    /**
+     * This method gets the company name of the part
+     * @return returns the company name
+     */
     public String getCompanyName() {return companyName;}
 }

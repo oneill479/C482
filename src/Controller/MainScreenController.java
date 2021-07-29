@@ -1,5 +1,14 @@
 package Controller;
 
+/**
+ * Class MainScreenController.java
+ */
+
+/**
+ *
+ * @author Caleb O'Neill
+ */
+
 import Model.Part;
 import Model.Product;
 import javafx.collections.FXCollections;
@@ -24,6 +33,9 @@ import java.util.ResourceBundle;
 import static Controller.AddPartsController.isInteger;
 import static Model.Inventory.*;
 
+/**
+ * This class is the main screen controller
+ */
 public class MainScreenController implements Initializable {
 
     public TableView partTable;
@@ -47,6 +59,9 @@ public class MainScreenController implements Initializable {
     private static Part selectedPart;
     private static Product selectedProduct;
 
+    /**
+     * This initializes the main screen controller
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -76,8 +91,8 @@ public class MainScreenController implements Initializable {
     }
 
     /**
-     *
-     * @param actionEvent Takes user to the add parts screen
+     * This method takes the user to the add parts screen
+     * @param actionEvent Add button clicked on parts section
      * @throws IOException Checks to see if add parts screen will load correctly
      */
     public void toAddParts(ActionEvent actionEvent) throws IOException {
@@ -90,7 +105,7 @@ public class MainScreenController implements Initializable {
     }
 
     /**
-     *
+     * This returns the part to another controller
      * @return Returns the selected part on parts table
      */
     public static Part getPart() {
@@ -98,8 +113,8 @@ public class MainScreenController implements Initializable {
     }
 
     /**
-     *
-     * @param actionEvent Takes user to the modify parts screen
+     * This method takes the user to the modify parts screen
+     * @param actionEvent Modify button clicked on parts section
      * @throws IOException Checks to see if user has selected a part to be modified
      */
     public void toModifyParts(ActionEvent actionEvent) throws IOException {
@@ -116,18 +131,16 @@ public class MainScreenController implements Initializable {
         catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Modify Parts");
-            alert.setContentText("You must select/highlight a part!");
+            alert.setContentText("You must select a part!");
             alert.showAndWait();
         }
 
     }
 
-    // Error resolving onAction='#addAssociatedPart', either the event handler is not in the Namespace or there is an error in the script.
-
     /**
      *
      * @param actionEvent Takes user to the add products screen
-     * @throws IOException
+     * @throws IOException Checks to see if add products screen loads correctly
      */
     public void toAddProducts(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/View/AddProducts.fxml"));
@@ -166,20 +179,23 @@ public class MainScreenController implements Initializable {
         catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Modify Products");
-            alert.setContentText("You must select/highlight a part!");
+            alert.setContentText("You must select a product!");
             alert.showAndWait();
         }
     }
 
     /**
-     *
-     * @param actionEvent Removes a part when Delete button clicked
+     * This method removes a part
+     * @param actionEvent Delete button clicked on parts section
      */
     public void removePart(ActionEvent actionEvent) {
         Part selectedPart = (Part) partTable.getSelectionModel().getSelectedItem();
         selectedPart = (Part) partTable.getSelectionModel().getSelectedItem();
         if(selectedPart == null) {
-            JOptionPane.showMessageDialog(null, "You must select a part!");
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Delete Parts");
+            alert.setContentText("You must select a part!");
+            alert.showAndWait();
             return;
         };
 
@@ -199,14 +215,17 @@ public class MainScreenController implements Initializable {
     }
 
     /**
-     *
-     * @param actionEvent Removes a product when Delete button clicked
+     * This method removes a product
+     * @param actionEvent Delete button clicked on products section
      */
     public void removeProduct(ActionEvent actionEvent) {
         Product selectedProduct = (Product) productTable.getSelectionModel().getSelectedItem();
         selectedProduct = (Product) productTable.getSelectionModel().getSelectedItem();
         if(selectedProduct == null) {
-            JOptionPane.showMessageDialog(null, "You must select a product!");
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Delete Products");
+            alert.setContentText("You must select a product!");
+            alert.showAndWait();
             return;
         };
 
@@ -228,7 +247,7 @@ public class MainScreenController implements Initializable {
     }
 
     /**
-     *
+     * This method searches for a part
      * @param keyEvent Takes in user typed text to search for part
      */
     public void partSearch(KeyEvent keyEvent) {
@@ -251,7 +270,7 @@ public class MainScreenController implements Initializable {
     }
 
     /**
-     *
+     * This method searches for a product
      * @param keyEvent Takes in user typed text to search for product
      */
     public void productSearch(KeyEvent keyEvent) {

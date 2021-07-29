@@ -1,5 +1,14 @@
 package Controller;
 
+/**
+ * Class AddProductsController.java
+ */
+
+/**
+ *
+ * @author Caleb O'Neill
+ */
+
 import Model.Part;
 import Model.Product;
 import javafx.collections.FXCollections;
@@ -23,12 +32,14 @@ import java.net.URL;
 import java.util.Random;
 import java.util.ResourceBundle;
 
-import static Controller.AddPartsController.isInteger;
 import static Model.Inventory.*;
 
+/**
+ * This class adds a product to the inventory
+ */
 public class AddProductsController implements Initializable {
 
-    private int id, stock, min, max, listLength;
+    private int id, stock, min, max;
     private String name;
     private double price;
 
@@ -55,6 +66,9 @@ public class AddProductsController implements Initializable {
     private ObservableList<Part> addPart = FXCollections.observableArrayList();
     private ObservableList<Part> removePart = FXCollections.observableArrayList();
 
+    /**
+     * This initializes the add products controller
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -81,6 +95,11 @@ public class AddProductsController implements Initializable {
 
     }
 
+    /**
+     * This method generates a random product id
+     * @return Returns a product id
+     */
+
     public static int getRandomProductId () {
         Random rand = new Random();
         int upperBound = 25 + getAllProducts().size();
@@ -94,6 +113,11 @@ public class AddProductsController implements Initializable {
         return randomId;
     }
 
+    /**
+     * This method takes the user to the main screen
+     * @param actionEvent Save or cancel button being pressed
+     * @throws IOException Checks to see if the main screen will load correctly
+     */
     public void toMain(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/View/MainScreen.fxml"));
         Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -103,6 +127,11 @@ public class AddProductsController implements Initializable {
         stage.show();
     }
 
+    /**
+     * This method adds a product to the inventory
+     * @param actionEvent Save button clicked to save the product
+     * @throws IOException Checks to make sure the main screen loads correctly
+     */
     public void addNewProduct(ActionEvent actionEvent) throws IOException {
         String errorStr = checkInputs(productName, productPrice, productMax, productMin, productInventory);
 
@@ -132,6 +161,10 @@ public class AddProductsController implements Initializable {
 
     }
 
+    /**
+     *  This method adds an associated part
+     * @param actionEvent Add button clicked
+     */
     public void addPart(ActionEvent actionEvent) {
 
             if ((Part) addPartTable.getSelectionModel().getSelectedItem() == null) {
@@ -143,6 +176,10 @@ public class AddProductsController implements Initializable {
 
     }
 
+    /**
+     * This method removes an associated part
+     * @param actionEvent Remove button clicked
+     */
     public void removePart(ActionEvent actionEvent) {
         if ((Part) removePartTable.getSelectionModel().getSelectedItem() == null) {
             JOptionPane.showMessageDialog(null, "You must select/highlight a part!");
@@ -152,6 +189,11 @@ public class AddProductsController implements Initializable {
         }
     }
 
+    /**
+     * This method checks to see if the string input has only letters or spaces
+     * @param text String to be tested for characters
+     * @return returns true if there are only characters and spaces, otherwise returns false
+     */
     public static boolean isLetters(String text) {
         String trimmed = text.replaceAll("\\s+","");
         char[] textArray = trimmed.toCharArray();
@@ -163,9 +205,9 @@ public class AddProductsController implements Initializable {
     }
 
     /**
-     *
-     * @param text
-     * @return
+     * This method checks to see if the string input has only digits
+     * @param text String to be tested for digits
+     * @return returns true if there are only digits, otherwise returns false
      */
     public static boolean isInteger(String text) {
         int num;
@@ -181,9 +223,9 @@ public class AddProductsController implements Initializable {
     }
 
     /**
-     *
-     * @param text
-     * @return
+     * This method checks to see if the input string is a decimal number
+     * @param text String to be tested as a decimal
+     * @return returns true if it is a decimal number, otherwise returns false
      */
     public static boolean isDecimal(String text) {
         double num;
@@ -198,6 +240,15 @@ public class AddProductsController implements Initializable {
 
     }
 
+    /**
+     * This method checks to see if all the text fields pass input validation
+     * @param name Product name
+     * @param price Product price
+     * @param max Product max
+     * @param min Product min
+     * @param inventory Product stock
+     * @return Returns a string of errors
+     */
     public static String checkInputs(TextField name, TextField price, TextField max, TextField min, TextField inventory) {
         StringBuilder errorBuild = new StringBuilder();
         int numError = 0;
@@ -256,7 +307,7 @@ public class AddProductsController implements Initializable {
     }
 
     /**
-     *
+     * This method uses text field to search for part
      * @param keyEvent Takes in user typed text to search for part
      */
     public void searchPart(KeyEvent keyEvent) {
