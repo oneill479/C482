@@ -203,13 +203,10 @@ public class MainScreenController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            boolean exists = Model.Inventory.deletePart(selectedPart);
-            if (exists) {
+                Model.Inventory.deletePart(selectedPart);
                 mainParts.remove(selectedPart);
                 partSearch.setText("");
                 partTable.setItems(getAllParts());
-            }
-            else JOptionPane.showMessageDialog(null, "Could not delete Part!");
         }
 
     }
@@ -233,16 +230,15 @@ public class MainScreenController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            boolean exists = Model.Inventory.deleteProduct(selectedProduct);
             if (selectedProduct.getAllAssociatedParts().size() > 0) {
                 JOptionPane.showMessageDialog(null, "Can not delete a product with associated parts!");
             }
-            else if (exists) {
+            else {
+                Model.Inventory.deleteProduct(selectedProduct);
                 mainProducts.remove(selectedProduct);
                 productSearch.setText("");
                 productTable.setItems(getAllProducts());
             }
-            else JOptionPane.showMessageDialog(null, "Could not delete Product!");
         }
     }
 
